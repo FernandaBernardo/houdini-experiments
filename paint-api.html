@@ -1,0 +1,83 @@
+<html>
+<head>
+	<meta charset="utf-8">
+</head>
+<body>
+	<button id="ripple">
+		Eu sou um botão!
+	</button>
+
+	<style>
+		#ripple {
+			font-size: 1.5em;
+			padding: 1.5em;
+			background-color: cornflowerblue;
+			color: darkblue;
+			--ripple-x: 0;
+			--ripple-y: 0;
+			--ripple-color: rgba(255,255,255,0.54);
+			--animation-tick: 0;
+		}
+
+		#ripple:focus {
+			outline: none;
+		}
+		
+		#ripple.animating {
+			background-image: paint(ripple);
+		}
+	</style>
+
+	<script>
+		if ('paintWorklet' in CSS) {
+			CSS.paintWorklet.addModule('paintworklet.js');
+		}
+
+		CSS.registerProperty({
+			name: '--ripple-color',
+			syntax: '<color>',
+			inherits: true,
+			initialValue: 'purple',
+		});
+
+		CSS.registerProperty({
+			name: '--ripple-y',
+			syntax: '<number>',
+			inherits: true,
+			initialValue: 0,
+		});
+
+		CSS.registerProperty({
+			name: '--ripple-x',
+			syntax: '<number>',
+			inherits: true,
+			initialValue: 0,
+		});
+
+		CSS.registerProperty({
+			name: '--animation-tick',
+			syntax: '<number>',
+			inherits: true,
+			initialValue: 0,
+		});
+
+		const button = document.querySelector('#ripple');
+		button.addEventListener('click', evt => {
+			button.classList.add('animating');
+			const [x, y] = [evt.clientX, evt.clientY];
+			const start = performance.now();
+			requestAnimationFrame(function raf(now) {
+				const count = Math.floor(now - start);
+				button.style.cssText = `--ripple-x: ${x}; --ripple-y: ${y}; --animation-tick: ${count};`;
+				if(count > 1000) {
+					button.classList.remove('animating');
+					button.style.cssText = `--animation-tick: 0`;
+					return;
+				}
+				requestAnimationFrame(raf);
+			})
+		})
+
+	</script>
+</body>
+</html>

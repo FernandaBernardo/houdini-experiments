@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Properties and Values API</title>
+	<style>
+		body {
+			--theme-color: cornflowerblue;
+			background-color: var(--theme-color);
+			transition: --theme-color 1s ease-in-out;
+		}
+
+		body.dark-theme {
+			--theme-color: midnightblue;
+		}
+	</style>
+</head>
+<body>
+	<button id='dark-mode'>Dark mode</button>
+	
+	<script>
+		let button = document.getElementById('dark-mode');
+		button.addEventListener('click', function() {
+			let body = document.getElementsByTagName('body').item(0);
+			if (body.classList.contains('dark-theme')) {
+				body.classList.remove('dark-theme');
+			} else {
+				body.classList.add('dark-theme');
+			}
+		});
+	</script>
+
+	<script>
+		window.CSS.registerProperty({
+			name: '--theme-color',
+			syntax: '<color>',
+			inherits: true,
+			initialValue: 'tomato'
+		});
+	</script>
+</body>
+</html>
